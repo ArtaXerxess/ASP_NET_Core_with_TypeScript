@@ -15,7 +15,25 @@ namespace ASP_NET_Core_with_TypeScript.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var viewModel = new SimpleViewModel();
+            var items = new List<ToDoItem>();
+            var rand = new Random();
+            var priorities = Enum.GetValues(typeof(ItemPriority)).Cast<ItemPriority>().ToList();
+
+            for (int i = 1; i <= 100; i++)
+            {
+                var randomPriority = priorities[rand.Next(priorities.Count)];
+                items.Add(new ToDoItem()
+                {
+                    Id = i,
+                    Title = $"item {i}",
+                    Description = $"some description {i}",
+                    Priority = randomPriority
+                });
+            }
+
+            viewModel.ToDoItems = items;
+            return View(viewModel);
         }
 
         public IActionResult Privacy()
@@ -28,5 +46,10 @@ namespace ASP_NET_Core_with_TypeScript.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+    }
+
+    class SimpleViewModel
+    {
+        public List<ToDoItem>? ToDoItems { get; set; }
     }
 }
